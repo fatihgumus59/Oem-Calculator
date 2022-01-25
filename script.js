@@ -98,16 +98,6 @@ const UIController = (function () {
 
     }
 
-
-    const dolar = new Dolar();
-
-    dolar.getCurrencyList('USD')
-        .then(result => {
-
-
-            console.log(result);
-        });
-
     const createProductList = (product) => {
 
         let html = "";
@@ -165,11 +155,23 @@ const UIController = (function () {
         document.querySelector(Selectors.productCard).style.display = 'none';
     }
 
+    const dolar = new Dolar();
+
+
+
     const showTotal = (total) => {
 
+        dolar.getCurrencyList('USD')
+            .then(result => {
+
+                document.querySelector(Selectors.totaltl).textContent = total * result;
+
+                console.log(result);
+            });
 
         document.querySelector(Selectors.totalusd).textContent = total;
-        document.querySelector(Selectors.totaltl).textContent = total * 10;
+
+
 
 
     }
@@ -185,6 +187,12 @@ const UIController = (function () {
         hideCard,
         showTotal,
         liveTl: function () {
+
+            dolar.getCurrencyList('USD')
+                .then(result => {
+
+                    document.querySelector(Selectors.livetl).textContent = result;
+                });
         }
     }
 
@@ -237,6 +245,9 @@ const AppController = (function (productctrl, ui) {
         init: function () {
             console.log('Veriler Alınıyor..');
             const products = productctrl.getProducts();
+
+            //live exchange rate
+            ui.liveTl();
 
             if (products.length == 0) {
                 ui.hideCard();
