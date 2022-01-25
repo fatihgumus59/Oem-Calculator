@@ -1,6 +1,15 @@
 class Dolar {
 
+    async getCurrencyList(currency1) {
 
+        let url = `https://api.frankfurter.app/latest?from=${currency1}`;
+
+        const data = await fetch(url);
+
+        const currency = await data.json();
+
+        return currency.rates.TRY;
+    }
 
 }
 
