@@ -66,6 +66,21 @@ const ProductController = (function () {
 
     }
 
+    const getProductById = (id) => {
+
+        let product = null;
+
+        data.products.forEach(function (prd) {
+
+            if (prd.id == id) {
+                product = prd;
+            }
+
+        })
+
+        return product;
+
+    }
     return {
         getProducts: function () {
 
@@ -74,6 +89,7 @@ const ProductController = (function () {
         getData: function () {
             return data;
         },
+        getProductById,
         addProduct,
         getTotal
     }
@@ -111,7 +127,7 @@ const UIController = (function () {
                 <td>${prd.price} $</td>
                 <td class="text-right">
                     <button type="submit" class="btn btn-warning btn-sm">
-                        <i class="far fa-edit"></i>
+                        <i class="far fa-edit product-edit"></i>
 
                     </button>
                 </td>
@@ -133,7 +149,7 @@ const UIController = (function () {
                 <td>${prd.price} $</td>
                 <td class="text-right">
                     <button type="submit" class="btn btn-warning btn-sm">
-                        <i class="far fa-edit"></i>
+                        <i class="far fa-edit product-edit"></i>
 
                     </button>
                 </td>
@@ -206,7 +222,7 @@ const AppController = (function (productctrl, ui) {
         //add product event
 
         document.querySelector(UISelectors.addButton).addEventListener('click', productAddSubmit);
-
+        document.querySelector(UISelectors.productList).addEventListener('click', productEditSubmit);
     }
 
 
@@ -237,6 +253,19 @@ const AppController = (function (productctrl, ui) {
         e.preventDefault();
     }
 
+    const productEditSubmit = (e) => {
+
+        if (e.target.classList.contains('product-edit')) {
+
+            let id = e.target.parentNode.parentNode.previousElementSibling.previousElementSibling.
+                previousElementSibling.textContent;
+
+            const product = productctrl.getProductById(id);
+
+            console.log(product);
+        }
+        e.preventDefault();
+    }
 
     return {
         init: function () {
