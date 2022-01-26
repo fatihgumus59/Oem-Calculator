@@ -8,7 +8,7 @@ class Dolar {
 
         const currency = await data.json();
 
-        return currency.rates.TRY;
+        return currency.rates.TRY.toFixed(2);
     }
 
 }
@@ -62,7 +62,7 @@ const ProductController = (function () {
         })
 
         data.totalPrice = total;
-        return data.totalPrice;
+        return Number(data.totalPrice.toFixed(3));
 
     }
 
@@ -164,15 +164,12 @@ const UIController = (function () {
         dolar.getCurrencyList('USD')
             .then(result => {
 
-                document.querySelector(Selectors.totaltl).textContent = total * result;
+                document.querySelector(Selectors.totaltl).textContent = Number((total * result).toFixed(3));
 
                 console.log(result);
             });
 
         document.querySelector(Selectors.totalusd).textContent = total;
-
-
-
 
     }
 
