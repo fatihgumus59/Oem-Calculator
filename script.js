@@ -81,6 +81,15 @@ const ProductController = (function () {
         return product;
 
     }
+
+    const setCurrentProduct = (product) => {
+
+        data.selectedProduct = product;
+
+    }
+    const getCurrentProduct = () => {
+        return data.selectedProduct;
+    }
     return {
         getProducts: function () {
 
@@ -90,6 +99,8 @@ const ProductController = (function () {
             return data;
         },
         getProductById,
+        setCurrentProduct,
+        getCurrentProduct,
         addProduct,
         getTotal
     }
@@ -105,6 +116,9 @@ const UIController = (function () {
 
         productList: '#item-list',
         addButton: '#addBtn',
+        updateButton: '.updateBtn',
+        deleteButton: '.deleteBtn',
+        cancelButton: '.cancelBtn',
         productName: '#productName',
         productPrice: '#productPrice',
         productCard: '#productCard',
@@ -173,8 +187,6 @@ const UIController = (function () {
 
     const dolar = new Dolar();
 
-
-
     const showTotal = (total) => {
 
         dolar.getCurrencyList('USD')
@@ -189,7 +201,36 @@ const UIController = (function () {
 
     }
 
+    const addProductToForm = () => {
+        const selectedProduct = ProductController.getCurrentProduct();
+        document.querySelector(Selectors.productName).value = selectedProduct.name;
+        document.querySelector(Selectors.productPrice).value = selectedProduct.price;
+    }
 
+    const addingState = () => {
+        UIController.clearInputs();
+        document.querySelector(Selectors.addButton).style.display='inline';
+        document.querySelector(Selectors.updateButton).style.display='none';
+        document.querySelector(Selectors.deleteButton).style.display='none';
+        document.querySelector(Selectors.cancelButton).style.display='none';
+
+
+    }
+
+    const editState = (tr) => {
+
+        const parent = tr.parentNode;
+
+        for(let i=0;i<parent.children.length;i++){
+            parent.children[i].classList.remove('bg-warning');
+        }
+
+        tr.classList.add('bg-warning');
+        document.querySelector(Selectors.addButton).style.display='none';
+        document.querySelector(Selectors.updateButton).style.display='inline';
+        document.querySelector(Selectors.deleteButton).style.display='inline';
+        document.querySelector(Selectors.cancelButton).style.display='inline';
+    }
     return {
         createProductList,
         getSelectors: function () {
@@ -206,7 +247,10 @@ const UIController = (function () {
 
                     document.querySelector(Selectors.livetl).textContent = result;
                 });
-        }
+        },
+        addProductToForm,
+        addingState,
+        editState
     }
 
 
@@ -262,7 +306,12 @@ const AppController = (function (productctrl, ui) {
 
             const product = productctrl.getProductById(id);
 
-            console.log(product);
+            productctrl.setCurrentProduct(product);
+
+            ui.addProductToForm();
+
+            ui.editState(e.target.parentNode.parentNode.parentNode);
+
         }
         e.preventDefault();
     }
@@ -270,6 +319,8 @@ const AppController = (function (productctrl, ui) {
     return {
         init: function () {
             console.log('Veriler Alınıyor..');
+
+            ui.addingState();
             const products = productctrl.getProducts();
 
             //live exchange rate
