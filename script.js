@@ -158,7 +158,8 @@ const UIController = (function () {
         productCard: '#productCard',
         totalusd: '#total-usd',
         totaltl: '#total-tl',
-        livetl: '#live-tl'
+        livetl: '#live-tl',
+        alertCard: '.alert'
 
     }
 
@@ -308,6 +309,34 @@ const UIController = (function () {
         document.querySelector(Selectors.deleteButton).style.display = 'inline';
         document.querySelector(Selectors.cancelButton).style.display = 'inline';
     }
+
+    const addAlert = (alert, message) => {
+
+        let card = document.querySelector(Selectors.alertCard);
+        card.style.display = 'block';
+        card.classList.add(alert);
+        card.innerHTML = message;
+
+
+    }
+
+    const clearAlert = () => {
+
+        let card = document.querySelector(Selectors.alertCard);
+
+        if (card.classList.contains('alert-danger')) {
+            card.classList.remove('alert-danger');
+        } else if (card.classList.contains('alert-success')) {
+            card.classList.remove('alert-success');
+        } else if (card.classList.contains('alert-primary')) {
+            card.classList.remove('alert-primary');
+        } else if (card.classList.contains('alert-dark')) {
+            card.classList.remove('alert-dark');
+        }
+
+        document.querySelector(Selectors.alertCard).style.display = 'none';
+
+    }
     return {
         createProductList,
         getSelectors: function () {
@@ -330,7 +359,9 @@ const UIController = (function () {
         addProductToForm,
         addingState,
         clearWarnings,
-        editState
+        editState,
+        addAlert,
+        clearAlert
     }
 
 
@@ -354,10 +385,20 @@ const AppController = (function (productctrl, ui) {
 
     const productAddSubmit = (e) => {
 
+
         const productName = document.querySelector(UISelectors.productName).value;
         const productPrice = document.querySelector(UISelectors.productPrice).value;
 
         if (productName !== '' && productPrice !== '') {
+
+            // alert add
+            ui.addAlert('alert-success', 'Başarıyla eklendi.');
+
+            // alert clear
+            setTimeout(() => {
+                ui.clearAlert();
+            }, 2500)
+
             // add product
             const newProduct = productctrl.addProduct(productName, productPrice);
 
@@ -373,6 +414,16 @@ const AppController = (function (productctrl, ui) {
 
             ui.clearInputs();
 
+        } else {
+
+            // alert add
+            ui.addAlert('alert-danger', 'Lütfen boş alanları doldurunuz.');
+
+            // alert clear
+            setTimeout(() => {
+                ui.clearAlert();
+
+            }, 2500);
         }
 
         e.preventDefault();
@@ -401,10 +452,20 @@ const AppController = (function (productctrl, ui) {
 
     const editProductSubmit = (e) => {
 
+        ui.clearAlert();
+
         const productName = document.querySelector(UISelectors.productName).value;
         const productPrice = document.querySelector(UISelectors.productPrice).value;
 
         if (productName !== '' && productPrice !== '') {
+
+            // add alert
+            ui.addAlert('alert-primary', 'Güncelleme başarılı');
+
+            // clear alert
+            setTimeout(() => {
+                ui.clearAlert();
+            }, 2500);
 
             //update product
 
@@ -420,7 +481,6 @@ const AppController = (function (productctrl, ui) {
             ui.showTotal(total);
 
             ui.addingState();
-
         }
 
         e.preventDefault();
@@ -453,7 +513,15 @@ const AppController = (function (productctrl, ui) {
 
         ui.addingState();
 
-        if(total==0){
+        //add alert
+        ui.addAlert('alert-dark', 'Başarıyla silindi.');
+
+        // delete alert
+        setTimeout(() => {
+            ui.clearAlert();
+        }, 2500);
+
+        if (total == 0) {
             ui.hideCard();
         }
 
