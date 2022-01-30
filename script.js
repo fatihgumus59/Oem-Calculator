@@ -16,7 +16,65 @@ class Dolar {
 // Storage Controller
 const StorageContoller = (function () {
 
+    const storageProduct = (product) => {
 
+        let products;
+        if (localStorage.getItem('products') === null) {
+
+            products = [];
+            products.push(product);
+
+        } else {
+
+            products = JSON.parse(localStorage.getItem('products'));
+            products.push(product);
+        }
+        localStorage.setItem('products', JSON.stringify(products));
+
+
+    }
+
+    const getProducts = () => {
+
+        let products;
+        if (localStorage.getItem('products') == null) {
+            products = [];
+        } else {
+            products = JSON.parse(localStorage.getItem('products'));
+        }
+        return products;
+    }
+
+    const updateProduct = (product) => {
+        let products = JSON.parse(localStorage.getItem('products'));
+
+        products.forEach(function (prd, index) {
+            if (product.id == prd.id) {
+                products.splice(index, 1, product);
+            }
+        });
+        localStorage.setItem('products', JSON.stringify(products));
+
+    }
+
+    const deleteProduct = (id) => {
+        let products = JSON.parse(localStorage.getItem('products'));
+
+        products.forEach(function (prd, index) {
+            if (id == prd.id) {
+                products.splice(index, 1);
+            }
+        });
+        localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    return {
+        storageProduct,
+        getProducts,
+        updateProduct,
+        deleteProduct
+
+    }
 
 
 })();
@@ -32,7 +90,7 @@ const ProductController = (function () {
 
     const data = {
 
-        products: [],
+        products: StorageContoller.getProducts(),
         selectedProduct: null,
         totalPrice: 0
     }
@@ -369,7 +427,7 @@ const UIController = (function () {
 
 // APP Controller
 
-const AppController = (function (productctrl, ui) {
+const AppController = (function (productctrl, ui, storage) {
 
     const UISelectors = ui.getSelectors();
     const loadEventListeners = function () {
@@ -381,7 +439,6 @@ const AppController = (function (productctrl, ui) {
         document.querySelector(UISelectors.deleteButton).addEventListener('click', deleteProductSubmit);
 
     }
-
 
     const productAddSubmit = (e) => {
 
@@ -404,6 +461,9 @@ const AppController = (function (productctrl, ui) {
 
             // add item
             ui.addProduct(newProduct);
+
+            // add product to storage
+            storage.storageProduct(newProduct);
 
             // get total
             const total = productctrl.getTotal();
@@ -475,10 +535,12 @@ const AppController = (function (productctrl, ui) {
 
             // get total
             const total = productctrl.getTotal();
-            console.log(total);
 
             // show total
             ui.showTotal(total);
+
+            //update storage
+            storage.updateProduct(updateProduct);
 
             ui.addingState();
         }
@@ -510,6 +572,9 @@ const AppController = (function (productctrl, ui) {
 
         // show total
         ui.showTotal(total);
+
+        // delete from storage
+        storage.deleteProduct(selectedProduct.id);
 
         ui.addingState();
 
@@ -545,6 +610,13 @@ const AppController = (function (productctrl, ui) {
                 ui.createProductList(products);
 
             }
+
+            // get total
+            const total = productctrl.getTotal();
+
+            // show total
+            ui.showTotal(total);
+
             loadEventListeners()
 
 
@@ -552,6 +624,6 @@ const AppController = (function (productctrl, ui) {
 
     }
 
-})(ProductController, UIController);
+})(ProductController, UIController, StorageContoller);
 
 AppController.init();
