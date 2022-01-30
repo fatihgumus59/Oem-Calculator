@@ -199,7 +199,6 @@ const ProductController = (function () {
 
 })();
 
-
 // UI Controller
 const UIController = (function () {
 
@@ -442,37 +441,48 @@ const AppController = (function (productctrl, ui, storage) {
 
     const productAddSubmit = (e) => {
 
-
         const productName = document.querySelector(UISelectors.productName).value;
         const productPrice = document.querySelector(UISelectors.productPrice).value;
 
         if (productName !== '' && productPrice !== '') {
 
-            // alert add
-            ui.addAlert('alert-success', 'Başarıyla eklendi.');
+            if (isNaN(productPrice)) {
 
-            // alert clear
-            setTimeout(() => {
-                ui.clearAlert();
-            }, 2500)
+                ui.addAlert('alert-danger', 'Lütfen rakam giriniz.');
 
-            // add product
-            const newProduct = productctrl.addProduct(productName, productPrice);
+                // alert clear
+                setTimeout(() => {
+                    ui.clearAlert();
+                }, 2500)
 
-            // add item
-            ui.addProduct(newProduct);
+            } else {
+                // alert add
+                ui.addAlert('alert-success', 'Başarıyla eklendi.');
 
-            // add product to storage
-            storage.storageProduct(newProduct);
+                // alert clear
+                setTimeout(() => {
+                    ui.clearAlert();
+                }, 2500)
 
-            // get total
-            const total = productctrl.getTotal();
+                // add product
+                const newProduct = productctrl.addProduct(productName, productPrice);
 
-            // show total
-            ui.showTotal(total);
+                // add item
+                ui.addProduct(newProduct);
+
+                // add product to storage
+                storage.storageProduct(newProduct);
+
+                // get total
+                const total = productctrl.getTotal();
+
+                // show total
+                ui.showTotal(total);
 
 
-            ui.clearInputs();
+                ui.clearInputs();
+
+            }
 
         } else {
 
