@@ -20,6 +20,7 @@ D --> E{Total x TRY}
 C --> E
 E --> F(TOTAL TL)
 ```
+
 For API: [Documentation](https://www.frankfurter.app/docs/)
 
 
