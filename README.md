@@ -12,6 +12,7 @@ We multiply the incoming data with the total and show it to the user.
 To explain visually:
 
 ```mermaid
+
 graph LR
 S[System]-->A
 A[API] --> B((USD))--to-->D((TRY))
@@ -19,6 +20,7 @@ S --> C(Total)
 D --> E{Total x TRY}
 C --> E
 E --> F(TOTAL TL)
+
 ```
 For API: [Documentation](https://www.frankfurter.app/docs/)
 
